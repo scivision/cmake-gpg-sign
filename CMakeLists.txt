@@ -14,3 +14,6 @@ gpg_sign(hello)
 
 add_test(NAME test_sign
   COMMAND ${CMAKE_COMMAND} -Dbinary_file:FILEPATH=$<TARGET_FILE:hello> -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GPGverify.cmake)
+set_tests_properties(test_sign PROPERTIES
+  TIMEOUT 10
+  PASS_REGULAR_EXPRESSION "gpg: Good signature")
