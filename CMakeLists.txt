@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14...3.25)
 
-project(PGPdemo LANGUAGES C)
+project(PGPdemo
+LANGUAGES C
+VERSION 1.0.0)
 
 enable_testing()
 

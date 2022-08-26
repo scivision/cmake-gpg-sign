@@ -62,7 +62,7 @@ set(target_sig ${target_file}.asc)
 
 if(TARGET ${target})
   add_custom_command(TARGET ${target} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E ${rm} ${target_sig}
+  COMMAND ${CMAKE_COMMAND} -E ${rm} -f ${target_sig}
   COMMAND ${GPG_EXECUTABLE} --detach-sign --armor ${target_file}
   VERBATIM
   )
