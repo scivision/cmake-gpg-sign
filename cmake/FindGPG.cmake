@@ -69,14 +69,12 @@ if(TARGET ${target})
 else()
   file(REMOVE ${target_sig})
 
-  execute_process(COMMAND ${GPG_EXECUTABLE} --detach-sign --armor ${target_file}
+  execute_process(COMMAND ${GPG_EXECUTABLE} --detach-sign --armor --output ${target_file}.asc ${target_file}
   RESULT_VARIABLE ret)
   if(NOT ret EQUAL 0)
     message(FATAL_ERROR "${GPG_EXECUTABLE} Failed to sign ${target_file}")
   endif()
 endif()
-
-install(FILES ${target_sig} TYPE BIN)
 
 endfunction(gpg_sign)
 
