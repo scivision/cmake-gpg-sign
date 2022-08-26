@@ -35,16 +35,15 @@ DOC "GPG executable"
 )
 
 
-set(GPG_HAVE_KEYS false)
-if(GPG_EXECUTABLE)
-  set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO NONE)
+if(GPG_EXECUTABLE AND NOT DEFINED GPG_HAVE_KEYS)
   execute_process(COMMAND ${GPG_EXECUTABLE} --list-keys
   RESULT_VARIABLE ret
   OUTPUT_VARIABLE keys
   OUTPUT_STRIP_TRAILING_WHITESPACE
+  TIMEOUT 10
   )
   if(ret EQUAL 0 AND NOT "${keys}" STREQUAL "")
-    set(GPG_HAVE_KEYS true)
+    set(GPG_HAVE_KEYS true CACHE BOOL "GPG keys found")
   endif()
   message(VERBOSE "GPG Keys:
   ${keys}")
