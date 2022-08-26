@@ -1,7 +1,26 @@
 # CMake GPG sign binaries
 
 Simple example of building and signing binaries and installing them to a user-defined location in CMake as a post-build action.
-Works on Windows, MacOS, Linux, etc.
+The
+[signature certifies](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Digital_signatures)
+that the worker created the signed binaries.
+As with any signing method, this does not certify you or the worker isn't corrupted in some way.
+This method works on every platform we've tried where GPG is available e.g. MacOS, Linux, Windows, ....
+
+You must have previously
+[setup GnuPG](https://www.scivision.dev/github-pgp-signed-verified-commit/)
+and have a GPG keypair for this example to work.
+Generating or importing a GPG [keypair](https://www.gnupg.org/gph/en/manual/c14.html) if one doesn't already exist is necessary
+For the key to be useful in general, you will need to
+[publish/exchange your public key](https://www.gnupg.org/gph/en/manual/x56.html)
+with the recipients in a trusted manner.
+GPG can be installed by:
+
+* macOS Homebrew: `brew install gnupg`
+* Linux: `apt install gnupg` or `dnf install gnupg2`
+* Windows: [Git](https://git-scm.com): `%PROGRAMFILES%/Git/usr/bin/gpg.exe`
+
+## Build
 
 ```sh
 cmake -B build -DCMAKE_INSTALL_PREFIX=~/demo
@@ -16,17 +35,29 @@ creates:
 * "~/demo/bin/hello" binary executable
 * "~/demo/bin/hello.asc" plain-text GPG binary signature
 
-You must have previously
-[setup PGP](https://www.scivision.dev/github-pgp-signed-verified-commit/)
-on your system for this example to work.
+## CPack Package
 
-## Example
+Optionally, CPack can be used to package the GPG signature files alongside the source and/or binary package files.
+After building, do:
 
 ```sh
-cmake -B build
+cpack --config build/CPackConfig.cmake  # binary package
 
-cmake --build build
+cpack --config build/CPackSourceConfig.cmake  # source package
+```
 
+Observe the files are created:
+
+```
+build/package/PGPdemo-<version>-Source.tar.zst
+build/package/PGPdemo-<version>-Source.tar.zst.asc
+build/package/PGPdemo-<version>-<platform>.tar.zst
+build/package/PGPdemo-<version>-<platform>.tar.zst.asc
+```
+
+## Verify signature
+
+```sh
 gpg --verify build/hello.asc build/hello
 ```
 
@@ -39,19 +70,14 @@ gpg: Good signature from "your PGP info" [ultimate]
 ...
 ```
 
+If the signature isn't matched to an imported public key, the return code is non-zero and a message includes:
+
+```
+gpg: Can't check signature: No public key
+```
+
 This is done as a self-test by:
 
 ```sh
 ctest --test-dir build
 ```
-
-## Discussion
-
-For projects that distribute one or a few binary files, this non-packaged approach may work.
-For example, create a CI/CD worker with a GPG signature and then create signed releases with it.
-The
-[signature certifies](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Digital_signatures)
-that the worker created the signed binaries.
-As with any signing method, this does not certify you or the worker isn't corrupted in some way.
-
-To make signed CPack packages, one way may be to make a frontend CMake script (or Bash, Python, etc.) that builds and packages and then creates a signature, with several CMake `execute_process` (or equivalent in other script languages) calls in the frontend script.
