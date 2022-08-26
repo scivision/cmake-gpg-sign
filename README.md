@@ -70,6 +70,12 @@ gpg: Good signature from "your PGP info" [ultimate]
 ...
 ```
 
+If the signature isn't matched to an imported public key, the return code is non-zero and a message includes:
+
+```
+gpg: Can't check signature: No public key
+```
+
 This is done as a self-test by:
 
 ```sh
