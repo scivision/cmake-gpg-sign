@@ -9,9 +9,7 @@ FindGPG
 by Michael Hirsch www.scivision.dev
 
 Finds GPG library, typically used to sign files.
-We don't check that GPG signature is available as that may require
-interactive terminal, which is not possible at CMake configure time
-with execute_process().
+Checks that GPG keys exist (but doesn't validate) before declaring FOUND.
 
 Provides functions:
 
@@ -37,9 +35,24 @@ DOC "GPG executable"
 )
 
 
+set(GPG_HAVE_KEYS false)
+if(GPG_EXECUTABLE)
+  set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO NONE)
+  execute_process(COMMAND ${GPG_EXECUTABLE} --list-keys
+  RESULT_VARIABLE ret
+  OUTPUT_VARIABLE keys
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  if(ret EQUAL 0 AND NOT "${keys}" STREQUAL "")
+    set(GPG_HAVE_KEYS true)
+  endif()
+  message(VERBOSE "GPG Keys:
+  ${keys}")
+endif()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GPG
-REQUIRED_VARS GPG_EXECUTABLE
+REQUIRED_VARS GPG_EXECUTABLE GPG_HAVE_KEYS
 )
 
 function(gpg_sign target)

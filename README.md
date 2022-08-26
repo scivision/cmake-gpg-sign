@@ -9,7 +9,11 @@ This method works on every platform we've tried where GPG is available e.g. MacO
 
 You must have previously
 [setup PGP](https://www.scivision.dev/github-pgp-signed-verified-commit/)
-on your system for this example to work.
+on your system for this example to work:
+
+* macOS Homebrew: `brew install gnupg`
+* Linux: `apt install gnupg` or `dnf install gnupg2`
+* Windows: [Git](https://git-scm.com): `%PROGRAMFILES%/Git/usr/bin/gpg.exe
 
 ## Build
 
