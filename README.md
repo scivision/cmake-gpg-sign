@@ -9,7 +9,12 @@ This method works on every platform we've tried where GPG is available e.g. MacO
 
 You must have previously
 [setup PGP](https://www.scivision.dev/github-pgp-signed-verified-commit/)
-on your system for this example to work:
+and have a GPG keypair for this example to work.
+Generating or importing a GPG [keypair](https://www.gnupg.org/gph/en/manual/c14.html) if one doesn't already exist is necessary
+For the key to be useful in general, you will need to
+[publish/exchange your public key](https://www.gnupg.org/gph/en/manual/x56.html)
+with the recipients in a trusted manner.
+GPG can be installed by:
 
 * macOS Homebrew: `brew install gnupg`
 * Linux: `apt install gnupg` or `dnf install gnupg2`
