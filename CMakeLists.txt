@@ -15,10 +15,15 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 find_package(GPG REQUIRED)
 
+# --- example executable to sign
 add_executable(hello hello.c)
 
+install(TARGETS hello)
+
+# --- GPG sign target
 gpg_sign(hello)
 
+# --- GPG verify target signature
 add_test(NAME test_sign
 COMMAND ${CMAKE_COMMAND} -Dbinary_file:FILEPATH=$<TARGET_FILE:hello> -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GPGverify.cmake
 )

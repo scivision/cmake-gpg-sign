@@ -60,13 +60,22 @@ endif()
 
 set(target_sig ${target_file}.asc)
 
-add_custom_command(TARGET ${target} POST_BUILD
+if(TARGET ${target})
+  add_custom_command(TARGET ${target} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E ${rm} ${target_sig}
   COMMAND ${GPG_EXECUTABLE} --detach-sign --armor ${target_file}
   VERBATIM
-)
+  )
+else()
+  file(REMOVE ${target_sig})
 
-install(TARGETS ${target} EXPORT ${PROJECT_NAME}-targets)
+  execute_process(COMMAND ${GPG_EXECUTABLE} --detach-sign --armor ${target_file}
+  RESULT_VARIABLE ret)
+  if(NOT ret EQUAL 0)
+    message(FATAL_ERROR "${GPG_EXECUTABLE} Failed to sign ${target_file}")
+  endif()
+endif()
+
 install(FILES ${target_sig} TYPE BIN)
 
 endfunction(gpg_sign)
